@@ -1,7 +1,7 @@
 import { EventRepository } from "../../../src/domain/repositories/events.repository";
 import { SearchEventsUseCase } from "../../../src/application/usecases/events/searchEvents.usecase";
 
-jest.mock("../../src/domain/repositories/event.repository");
+jest.mock("../../../src/domain/repositories/events.repository");
 
 describe("SearchEventsUseCase", () => {
   let searchEventsUseCase: SearchEventsUseCase;

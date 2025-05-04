@@ -8,30 +8,19 @@ export class PaginationDto {
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  page: number = 1;
+  page?: number = 1;
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  limit: number = 10;
+  limit?: number = 10;
 
   @IsOptional()
   @IsString()
-  sort: string = "date";
+  sort?: string = "date";
 
   @IsOptional()
   @IsString()
-  order: 'asc' | 'desc' = 'asc';
-
-  validatePagination(): void {
-    // its a number and defalts to 1
-    this.page = Math.max(1, this.page || 1);
-    
-    // its a number and defaults to 10
-    this.limit = Math.min(
-      PaginationDto.MAX_LIMIT, 
-      Math.max(1, this.limit || 10)
-    );
-  }
+  order?: 'asc' | 'desc' = 'asc';
 }

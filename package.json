@@ -13,7 +13,10 @@
     "docker:down": "docker-compose down",
     "seed": "npx ts-node migrations/seed.ts migrations/events.csv",
     "docker:dev": "nodemon --legacy-watch --watch 'src/**/*.ts' src/main.ts",
-    "build": "tsc && cp tsconfig.json dist/"
+    "build": "tsc && cp tsconfig.json dist/",
+    "docker:test:email": "docker-compose exec app npx ts-node test/notifications.ts both",
+    "docker:test:email:direct": "docker-compose exec app npx ts-node test/notifications.ts direct",
+    "docker:test:email:scheduler": "docker-compose exec app npx ts-node test/notifications.ts scheduler"
   },
   "keywords": [],
   "author": "",
@@ -21,20 +24,24 @@
   "dependencies": {
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cron": "^4.3.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.14.1",
     "mongoose-paginate-v2": "^1.9.0",
+    "nodemailer": "^7.0.0",
     "reflect-metadata": "^0.2.2",
     "routing-controllers": "^0.11.2",
     "typedi": "^0.10.0"
   },
   "devDependencies": {
+    "@types/cron": "^2.0.1",
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
     "@types/mongoose": "^5.11.96",
     "@types/mongoose-paginate-v2": "^1.6.4",
     "@types/node": "^22.15.3",
+    "@types/nodemailer": "^6.4.17",
     "@types/supertest": "^6.0.3",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.1.4",

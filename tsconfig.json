@@ -17,7 +17,7 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "."
   },
-  "include": ["src/**/*", "migrations/seed.ts"],
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules",
     "dist",
