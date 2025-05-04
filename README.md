@@ -1,6 +1,6 @@
 # Football Reservation System
 
-A node.js pplication for managing football match reservations built with Express, TypeScript, MongoDB, and containerized with Docker.
+A node.js application for managing football match reservations built with Express, TypeScript, MongoDB, and containerized with Docker.
 
 ## Prerequisites
 
@@ -58,13 +58,14 @@ This will start both the Node.js application and MongoDB containers. The API wil
 The application comes with a seeding script that populates the database with sample football matches. Useful to run before starting the FE.
 The fastest way of doing it without bothering is with docker-compose.
 
-1. Build and start your service
 ```bash
-npm run docker:build
-```
+# Move to backend folder
+cd backend
 
-2. In a separate terminal execute the seed
-```bash
+# Build and start your service
+npm run docker:build
+
+# In a separate terminal execute the seed
 npm run docker:seed
 ```
 
@@ -84,6 +85,9 @@ The application includes an automated email notification system for:
 Created a test script with Ethereal (a fake SMTP service):
 
 ```bash
+# Move to backend folder
+cd backend
+
 # Test both direct emails and scheduler
 npm run docker:test:email
 
@@ -112,10 +116,10 @@ After running the test, you'll receive credentials to view the sent emails in Et
   - Query parameters: `status`, `page`, `limit`
 
 ## Running Tests
-
-The project includes comprehensive unit and integration tests:
-
 ```bash
+# Move to backend folder
+cd backend
+
 # Run all tests
 npm test
 
@@ -132,4 +136,4 @@ npm run test:e2e
 3. Transactions for reservations?
 4. Write more e2e and unit tests
 5. API DOCS probably swagger
-
+C:\Users\Emili\Documents\GitHub\football-manager\backend
