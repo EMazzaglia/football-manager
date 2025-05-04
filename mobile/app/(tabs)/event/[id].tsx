@@ -20,6 +20,7 @@ export const EventDetail = () => {
     const [loading, setIsLoading] = useState(true);
 
     const fetchEvent = async (id: string) => {
+        console.log("Fetching event with ID:", id);
         try {
             const event = await getEventById(id);
             setEvent(event);
@@ -160,3 +161,5 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
 });
+
+export default EventDetail;

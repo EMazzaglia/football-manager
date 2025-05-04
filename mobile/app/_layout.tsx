@@ -1,21 +1,11 @@
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 
-export const RootLayout = () => {
+const RootLayout = () => {
   return (
-    <>
-      <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#25292e',
-          },
-          headerTintColor: '#fff',
-          contentStyle: {
-            backgroundColor: '#25292e',
-          },
-        }}
-      />
-    </>
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
   );
 }
+
+export default RootLayout;

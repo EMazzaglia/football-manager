@@ -20,8 +20,6 @@ export default function EventsList() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Pagination state
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -29,12 +27,10 @@ export default function EventsList() {
     const fetchEvents = async (params: SearchEventsParams = {}, refresh: boolean = false) => {
         try {
             setError(null);
-
-            // Set the page parameter
             const queryParams = {
                 ...params,
                 page: refresh ? 1 : page,
-                limit: 10 // Set your preferred limit
+                limit: 10
             };
 
             const response = await getEvents(queryParams);

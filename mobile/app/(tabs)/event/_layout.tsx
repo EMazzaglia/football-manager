@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function EventsLayout() {
+const EventsLayout = () => {
     return (
         <Stack
             screenOptions={{
@@ -16,3 +16,5 @@ export default function EventsLayout() {
         />
     );
 }
+
+export default EventsLayout;
