@@ -1,5 +1,5 @@
-import { JsonController, Post, Get, Body, Param, QueryParams } from "routing-controllers";
-import { Inject } from "typedi";
+import { Post, Get, Body, Param, QueryParams, Controller, JsonController } from "routing-controllers";
+import { Inject, Service,  } from "typedi";
 import { CreateReservationDto } from "../dtos/createReservation.dto";
 import { GetUserReservationsDto } from "../dtos/getUserReservation.dto";
 import { CreateReservationUseCase } from "../../application/usecases/reservations/createReservation.usecase";
@@ -7,6 +7,7 @@ import { GetUserReservationsUseCase } from "../../application/usecases/reservati
 import { Reservation } from "../../domain/models/reservation";
 import { PaginateResult } from "mongoose";
 
+@Service()
 @JsonController("/reservations")
 export class ReservationController {
   constructor(

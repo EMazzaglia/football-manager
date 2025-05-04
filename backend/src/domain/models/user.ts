@@ -17,7 +17,11 @@ const UserSchema = new Schema<User>(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false,
+    _id: false,
+  }
 );
 
 UserSchema.index({ email: 1 });

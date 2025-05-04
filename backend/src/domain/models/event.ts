@@ -21,6 +21,9 @@ const EventSchema = new Schema<Event>({
   league: { type: String, required: true },
   price: { type: Number, required: true },
   availableSeats: { type: Number, required: true }
+}, {
+  versionKey: false,
+  _id: false,
 });
 
 EventSchema.index({ country: 1 });

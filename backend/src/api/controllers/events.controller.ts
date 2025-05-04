@@ -1,11 +1,12 @@
 import { GetEventByIdUseCase } from "../../application/usecases/events/getEventById.usecase";
 import { SearchEventsUseCase } from "../../application/usecases/events/searchEvents.usecase";
 import { JsonController, Get, Param, QueryParams } from "routing-controllers";
-import { Inject } from "typedi";
+import { Inject, Service } from "typedi";
 import { SearchEventsDto } from "../dtos/searchEvent.dto";
 import { Event } from "src/domain/models/event";
 import { PaginateResult } from "mongoose";
 
+@Service()
 @JsonController("/events")
 export class EventController {
   constructor(

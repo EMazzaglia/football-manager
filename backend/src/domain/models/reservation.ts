@@ -13,6 +13,9 @@ const ReservationSchema = new Schema<Reservation>({
   eventId: { type: String, required: true },
   spots: { type: Number, required: true, min: 1, max: 2 },
   createdAt: { type: Date, default: Date.now },
+}, {
+  versionKey: false,
+  _id: false,
 });
 
 ReservationSchema.index({ userId: 1 });

@@ -1,135 +1,126 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Event } from '../types/events.interface';
-import { Text } from '@react-navigation/elements';
+import { StyleSheet, Text, Pressable, View } from 'react-native';
+import { Event } from '@/types/events.interface';
 
 interface EventCardProps {
     event: Event;
+    onPress: (id: string) => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event }) => {
-    // Format date string to a more readable format
-    const formattedDate = new Date(event.date).toLocaleDateString('en-US', {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
+export const EventCard = ({ event, onPress }: EventCardProps) => {
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
 
     return (
-        <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-            <View style={styles.teamsContainer}>
-                <Text style={styles.teamName}>
-                    {event.homeTeam}
-                </Text>
-                <Text style={styles.versus}>vs</Text>
-                <Text style={styles.teamName}>
-                    {event.awayTeam}
-                </Text>
-            </View>
-
-            <View style={styles.infoContainer}>
-                <View style={styles.infoRow}>
-                    <Text style={styles.label}>Date:</Text>
-                    <Text>{formattedDate}</Text>
+        <Pressable
+            style={styles.container}
+            onPress={() => onPress(event.eventId)}
+        >
+            <View style={styles.content}>
+                <View style={styles.header}>
+                    <Text style={styles.league}>{event.league}</Text>
+                    <Text style={styles.date}>{formatDate(event.date)}</Text>
                 </View>
 
-                <View style={styles.infoRow}>
-                    <Text style={styles.label}>League:</Text>
-                    <Text>{event.league}</Text>
+                <View style={styles.matchContainer}>
+                    <Text style={styles.teamName}>{event.homeTeam}</Text>
+                    <View style={styles.vsContainer}>
+                        <Text style={styles.vs}>VS</Text>
+                    </View>
+                    <Text style={styles.teamName}>{event.awayTeam}</Text>
                 </View>
 
-                <View style={styles.infoRow}>
-                    <Text style={styles.label}>Country:</Text>
-                    <Text>{event.country}</Text>
-                </View>
-            </View>
-
-            <View style={styles.bottomRow}>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.price}>
-                        ${event.price}
-                    </Text>
-                </View>
-
-                <View style={styles.seatsContainer}>
-                    <Text style={event.availableSeats > 10 ? styles.seatsAvailable : styles.seatsLimited}>
-                        {event.availableSeats} seats left
-                    </Text>
+                <View style={styles.footer}>
+                    <Text style={styles.location}>{event.country}</Text>
+                    <View style={styles.priceContainer}>
+                        <Text style={styles.price}>${event.price}</Text>
+                        <Text style={styles.seats}>{event.availableSeats} seats left</Text>
+                    </View>
                 </View>
             </View>
-        </TouchableOpacity>
+        </Pressable>
     );
-};
+}
 
 const styles = StyleSheet.create({
-    card: {
-        borderRadius: 10,
-        padding: 16,
+    container: {
+        backgroundColor: '#333',
+        borderRadius: 12,
+        overflow: 'hidden',
         marginBottom: 16,
+        elevation: 2,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 3,
-        backgroundColor: '#fff',
     },
-    teamsContainer: {
+    content: {
+        padding: 16,
+    },
+    header: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: 12,
     },
-    teamName: {
-        fontSize: 18,
-        flex: 1,
-        textAlign: 'center',
-    },
-    versus: {
-        marginHorizontal: 8,
+    league: {
+        color: '#0070f3',
+        fontWeight: '600',
         fontSize: 14,
-        color: '#687076',
     },
-    infoContainer: {
-        marginBottom: 12,
+    date: {
+        color: '#ccc',
+        fontSize: 14,
     },
-    infoRow: {
-        flexDirection: 'row',
-        marginBottom: 4,
-    },
-    label: {
-        width: 70,
-        color: '#687076',
-    },
-    bottomRow: {
+    matchContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 8,
-        paddingTop: 8,
-        borderTopWidth: 1,
-        borderTopColor: '#f0f0f0',
+        marginBottom: 16,
+    },
+    teamName: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+        flex: 1,
+    },
+    vsContainer: {
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 4,
+        marginHorizontal: 8,
+    },
+    vs: {
+        color: '#ccc',
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    location: {
+        color: '#ccc',
+        fontSize: 14,
     },
     priceContainer: {
-        backgroundColor: '#f0f8ff',
-        borderRadius: 4,
-        paddingVertical: 4,
-        paddingHorizontal: 8,
+        alignItems: 'flex-end',
     },
     price: {
-        color: '#0a7ea4',
+        color: '#0fc76e',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
-    seatsContainer: {
-        borderRadius: 4,
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-    },
-    seatsAvailable: {
-        color: '#22c55e',
-    },
-    seatsLimited: {
-        color: '#f59e0b',
+    seats: {
+        color: '#ccc',
+        fontSize: 12,
+        marginTop: 2,
     },
 });
-
-export default EventCard;

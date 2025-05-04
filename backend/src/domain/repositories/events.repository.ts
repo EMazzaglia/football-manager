@@ -7,7 +7,7 @@ import { PaginateResult } from "mongoose";
 @Service()
 export class EventRepository {
   async getById(id: string): Promise<Event> {
-    const event = await Event.findOne({ eventId: id }).lean();
+    const event = await Event.findOne({ eventId: id }, { _id: false }).lean();
 
     if (!event) {
       throw {
@@ -61,11 +61,14 @@ export class EventRepository {
       limit,
       lean: true,
       sort,
+      select: {
+        _id: false,
+      },
       customLabels: {
         docs: 'items',
         totalDocs: 'totalItems'
-      }
-    };
+      },
+    }
 
     try {
       return await Event.paginate(query, options);

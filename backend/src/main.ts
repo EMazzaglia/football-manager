@@ -9,11 +9,21 @@ dotenv.config();
 
 useContainer(Container);
 
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  optionsSuccessStatus: 200,
+  maxAge: 86400 // Cache the preflight response for 24 hours
+};
+
+
 const app = createExpressServer({
   controllers: [__dirname + "/api/controllers/*.ts"],
   middlewares: [__dirname + "/api/middlewares/*.ts"],
   defaultErrorHandler: false,
   classTransformer: true,
+  cors: corsOptions,
 });
 
 const startServer = async () => {
@@ -22,7 +32,7 @@ const startServer = async () => {
     const port = process.env.PORT || 3000;
     const schedulerService = Container.get(SchedulerService);
     schedulerService.start();
-    
+
     app.listen(port, () => console.log(`Server started on port ${port}`));
   } catch (error) {
     console.error("Failed to start server:", error);
