@@ -57,7 +57,7 @@ export class ReservationsRepository {
     const savedReservation = await reservation.save();
     event.availableSeats -= reservationData.spots;
     await event.save();
-    return savedReservation.toObject();
+    return savedReservation;
   }
 
   async getUserReservationsWithPagination(
@@ -71,9 +71,6 @@ export class ReservationsRepository {
       limit,
       lean: true,
       sort,
-      select: {
-        _id: false
-      },
       customLabels: {
         docs: 'items',
         totalDocs: 'totalItems'

@@ -23,7 +23,7 @@ export const EventCard = ({ event, onPress }: EventCardProps) => {
     const handleReservePress = (e: any) => {
         e.stopPropagation();
         router.push({
-            pathname: "/reservations",
+            pathname: "/reservations/createReservation",
             params: {
                 eventId: event.eventId,
                 homeTeam: event.homeTeam,

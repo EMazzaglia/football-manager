@@ -34,7 +34,9 @@ const TabsLayout = () => {
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="ticket" size={size} color={color} />
                     ),
+                    
                 }}
+                
             />
         </Tabs>
     );

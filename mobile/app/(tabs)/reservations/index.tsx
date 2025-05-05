@@ -1,97 +1,87 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
     StyleSheet,
-    TextInput,
-    Pressable,
-    Alert,
-    ScrollView,
+    FlatList,
     ActivityIndicator,
+    Pressable,
+    RefreshControl,
     SafeAreaView,
-    StatusBar,
-    KeyboardAvoidingView,
-    Platform
+    StatusBar
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { createReservation } from "@/api/reservation.service";
-import { CreateReservationRequest } from "@/types/reservations.interface";
+import { useRouter } from "expo-router";
+import { getUserReservations } from "@/api/reservation.service";
+import { Reservation } from "@/types/reservations.interface";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function ReservationPage() {
+
+export default function MyReservationsPage() {
     const router = useRouter();
-    const params = useLocalSearchParams();
-    const eventId = params.eventId as string;
-    const homeTeam = params.homeTeam as string;
-    const awayTeam = params.awayTeam as string;
-    const date = params.date as string;
-    const price = parseFloat(params.price as string || "0");
-    const availableSeats = parseInt(params.availableSeats as string || "0");
-
-    // If i would have authentication and sign up I would offert to buy tickets but before going through sign up into login the new user and then coming back to this page.
-    // since Im going without auth, harcoding a userId
-    const [userId, setUserId] = useState("user123");
-    const [spots, setSpots] = useState("1");
-    const [submitting, setSubmitting] = useState(false);
+    const [reservations, setReservations] = useState<Reservation[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleCreateReservation = async () => {
-        const spotsNum = parseInt(spots);
-        if (isNaN(spotsNum) || spotsNum < 1 || spotsNum > 2) {
-            setError("Please enter a valid number of spots (1 or 2)");
-            return;
-        }
+    // Hardcoding userId for demonstration purposes
+    const userId = "user123";
 
-        // Check if enough seats are available
-        if (spotsNum > availableSeats) {
-            setError(`Only ${availableSeats} seats available for this event`);
-            return;
-        }
-
-        setError(null);
-        setSubmitting(true);
-
+    const fetchReservations = async (refresh = false) => {
         try {
-            const reservationData: CreateReservationRequest = {
-                userId,
-                eventId,
-                spots: spotsNum
-            };
+            if (!refresh) setLoading(true);
+            setError(null);
 
-            await createReservation(reservationData);
-
-            Alert.alert(
-                "Reservation Created",
-                `You have successfully reserved ${spotsNum} ticket(s) for ${homeTeam} vs ${awayTeam}`,
-                [
-                    {
-                        text: "View My Tickets",
-                        onPress: () => router.push("/reservations/my-tickets")
-                    },
-                    {
-                        text: "Back to Events",
-                        onPress: () => router.push("/events")
-                    }
-                ]
-            );
+            const response = await getUserReservations(userId);
+            setReservations(response.items);
         } catch (err) {
-            console.error("Error creating reservation:", err);
-            setError("Failed to create reservation. Please try again.");
+            console.error("Error fetching reservations:", err);
+            setError("Failed to load your reservations. Please try again.");
         } finally {
-            setSubmitting(false);
+            setLoading(false);
+            setRefreshing(false);
         }
     };
 
-    if (!eventId) {
+    const onRefresh = () => {
+        setRefreshing(true);
+        fetchReservations(true);
+    };
+
+    useEffect(() => {
+        fetchReservations();
+    }, []);
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
+    const renderReservationItem = ({ item }: { item: Reservation }) => {
+        return (
+            <View style={styles.reservationCard}>
+                <View style={styles.fallbackContainer}>
+                    <Text style={styles.fallbackText}>Reservation #{item.id}</Text>
+                    <Text style={styles.fallbackDetail}>Spots: {item.spots}</Text>
+                    <Text style={styles.fallbackDetail}>
+                        Reserved on {formatDate(item.createdAt)}
+                    </Text>
+                </View>
+            </View>
+        );
+    };
+
+    if (loading && !refreshing) {
         return (
             <SafeAreaView style={styles.container}>
-                <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>No event selected. Please select an event first.</Text>
-                    <Pressable
-                        style={styles.backButton}
-                        onPress={() => router.push("/events")}
-                    >
-                        <Text style={styles.backButtonText}>Browse Events</Text>
-                    </Pressable>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#0070f3" />
+                    <Text style={styles.loadingText}>Loading your reservations...</Text>
                 </View>
             </SafeAreaView>
         );
@@ -100,67 +90,56 @@ export default function ReservationPage() {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" />
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.keyboardAvoidingView}
-            >
-                <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={styles.header}>Book Tickets</Text>
 
-                    {error && (
-                        <View style={styles.errorContainer}>
-                            <Text style={styles.errorText}>{error}</Text>
-                        </View>
-                    )}
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>My Tickets</Text>
+                <Pressable
+                    style={styles.newButton}
+                    onPress={() => router.push("/events")}
+                >
+                    <Text style={styles.newButtonText}>New Reservation</Text>
+                </Pressable>
+            </View>
 
-                    <View style={styles.eventCard}>
-                        <Text style={styles.eventTitle}>{homeTeam} vs {awayTeam}</Text>
-                        <Text style={styles.eventDetail}>{new Date(date).toLocaleDateString()}</Text>
-                        <Text style={styles.eventPrice}>Price: ${price}</Text>
-                        <Text style={styles.eventSeats}>Available Seats: {availableSeats}</Text>
-                    </View>
+            {error && (
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>{error}</Text>
+                    <Pressable
+                        style={styles.retryButton}
+                        onPress={() => fetchReservations()}
+                    >
+                        <Text style={styles.retryButtonText}>Retry</Text>
+                    </Pressable>
+                </View>
+            )}
 
-                    <View style={styles.formContainer}>
-                        <Text style={styles.label}>Number of Tickets (1-2)</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={spots}
-                            onChangeText={setSpots}
-                            keyboardType="number-pad"
-                            maxLength={1}
-                            placeholder="1"
-                            placeholderTextColor="#999"
-                        />
-
-                        <View style={styles.totalContainer}>
-                            <Text style={styles.totalLabel}>Total Price:</Text>
-                            <Text style={styles.totalPrice}>${price * parseInt(spots || "1")}</Text>
-                        </View>
-
+            <FlatList
+                data={reservations}
+                renderItem={renderReservationItem}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={styles.listContainer}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#fff"
+                        colors={["#0070f3"]}
+                        progressBackgroundColor="#333"
+                    />
+                }
+                ListEmptyComponent={
+                    <View style={styles.emptyContainer}>
+                        <Ionicons name="ticket-outline" size={64} color="#555" />
+                        <Text style={styles.emptyText}>You don't have any tickets yet</Text>
                         <Pressable
-                            style={[
-                                styles.submitButton,
-                                submitting && styles.disabledButton
-                            ]}
-                            onPress={handleCreateReservation}
-                            disabled={submitting}
+                            style={styles.browseButton}
+                            onPress={() => router.push("/events")}
                         >
-                            {submitting ? (
-                                <ActivityIndicator size="small" color="#fff" />
-                            ) : (
-                                <Text style={styles.submitButtonText}>Confirm Reservation</Text>
-                            )}
-                        </Pressable>
-
-                        <Pressable
-                            style={styles.cancelButton}
-                            onPress={() => router.back()}
-                        >
-                            <Text style={styles.cancelButtonText}>Cancel</Text>
+                            <Text style={styles.browseButtonText}>Browse Events</Text>
                         </Pressable>
                     </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
+                }
+            />
         </SafeAreaView>
     );
 }
@@ -170,136 +149,162 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#25292e',
     },
-    keyboardAvoidingView: {
-        flex: 1,
-    },
-    scrollContent: {
-        padding: 16,
-        paddingTop: 40,
-    },
     header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingTop: 40,
+        paddingBottom: 16,
+    },
+    headerTitle: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#fff',
-        marginBottom: 24,
+    },
+    newButton: {
+        backgroundColor: '#0070f3',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+    },
+    newButtonText: {
+        color: '#fff',
+        fontWeight: '600',
+    },
+    listContainer: {
+        padding: 16,
+        paddingTop: 8,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        color: '#fff',
+        marginTop: 16,
+        fontSize: 16,
     },
     errorContainer: {
+        margin: 16,
+        padding: 16,
         backgroundColor: 'rgba(255, 107, 107, 0.2)',
         borderRadius: 8,
-        padding: 16,
-        marginBottom: 16,
         alignItems: 'center',
     },
     errorText: {
         color: '#ff6b6b',
         fontSize: 14,
+        marginBottom: 12,
         textAlign: 'center',
-        marginBottom: 8,
     },
-    backButton: {
-        backgroundColor: '#0070f3',
-        borderRadius: 8,
+    retryButton: {
+        backgroundColor: '#333',
         paddingVertical: 8,
         paddingHorizontal: 16,
-        marginTop: 8,
+        borderRadius: 4,
     },
-    backButtonText: {
+    retryButtonText: {
         color: '#fff',
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: '500',
     },
-    eventCard: {
+    reservationCard: {
         backgroundColor: '#333',
         borderRadius: 12,
         padding: 16,
-        marginBottom: 24,
-    },
-    eventTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#fff',
-        marginBottom: 8,
-    },
-    eventDetail: {
-        fontSize: 14,
-        color: '#ccc',
-        marginBottom: 4,
-    },
-    eventPrice: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#0fc76e',
-        marginTop: 8,
-    },
-    eventSeats: {
-        fontSize: 14,
-        color: '#ccc',
-        marginTop: 4,
-    },
-    formContainer: {
-        marginBottom: 24,
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: '500',
-        color: '#fff',
-        marginBottom: 8,
-    },
-    input: {
-        backgroundColor: '#333',
-        borderRadius: 8,
-        padding: 12,
-        color: '#fff',
-        fontSize: 16,
         marginBottom: 16,
-        borderWidth: 1,
-        borderColor: '#444',
+        borderLeftWidth: 4,
+        borderLeftColor: '#0070f3',
     },
-    totalContainer: {
+    cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#333',
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 24,
-    },
-    totalLabel: {
-        fontSize: 16,
-        fontWeight: '500',
-        color: '#fff',
-    },
-    totalPrice: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#0fc76e',
-    },
-    submitButton: {
-        backgroundColor: '#0070f3',
-        borderRadius: 8,
-        padding: 16,
-        alignItems: 'center',
         marginBottom: 12,
     },
-    disabledButton: {
-        backgroundColor: '#333',
-        opacity: 0.7,
+    matchText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#fff',
+        flex: 1,
     },
-    submitButtonText: {
+    statusBadge: {
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 4,
+        marginLeft: 8,
+    },
+    pendingBadge: {
+        backgroundColor: '#f0ad4e',
+    },
+    confirmedBadge: {
+        backgroundColor: '#5cb85c',
+    },
+    cancelledBadge: {
+        backgroundColor: '#d9534f',
+    },
+    statusText: {
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+    },
+    detailsContainer: {
+        marginBottom: 12,
+    },
+    detailRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    detailText: {
+        color: '#ccc',
+        fontSize: 14,
+        marginLeft: 8,
+    },
+    reservedDate: {
+        color: '#999',
+        fontSize: 12,
+        fontStyle: 'italic',
+    },
+    fallbackContainer: {
+        padding: 8,
+    },
+    fallbackText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
+        marginBottom: 8,
     },
-    cancelButton: {
-        backgroundColor: 'transparent',
-        borderRadius: 8,
-        padding: 16,
+    fallbackDetail: {
+        color: '#ccc',
+        fontSize: 14,
+        marginBottom: 4,
+    },
+    emptyContainer: {
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#555',
+        justifyContent: 'center',
+        padding: 32,
+        marginTop: 40,
     },
-    cancelButtonText: {
+    emptyText: {
+        color: '#ccc',
+        fontSize: 16,
+        marginTop: 16,
+        marginBottom: 24,
+        textAlign: 'center',
+    },
+    browseButton: {
+        backgroundColor: '#0070f3',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+    },
+    browseButtonText: {
         color: '#fff',
         fontSize: 16,
+        fontWeight: 'bold',
     },
 });

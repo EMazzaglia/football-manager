@@ -1,5 +1,5 @@
 export interface Reservation {
-    _id: string;
+    id: string;
     userId: string;
     eventId: string;
     spots: number;
