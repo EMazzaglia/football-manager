@@ -115,6 +115,9 @@ After running the test, you'll receive credentials to view the sent emails in Et
 - `GET /reservations/user/:userId` - Get all reservations for a specific user
   - Query parameters: `status`, `page`, `limit`
 
+Postman collection to test these endpoints inside backend folder, file `Football app.postman_collection.json`
+To use it, import in in Postman and execute the different endpoints
+
 ## Running Tests
 ```bash
 # Move to backend folder
@@ -136,4 +139,4 @@ npm run test:e2e
 3. Transactions for reservations?
 4. Write more e2e and unit tests
 5. API DOCS probably swagger
-C:\Users\Emili\Documents\GitHub\football-manager\backend
+6. Caching. There are ton of events and a lot of users.

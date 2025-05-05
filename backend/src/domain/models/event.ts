@@ -23,7 +23,6 @@ const EventSchema = new Schema<Event>({
   availableSeats: { type: Number, required: true }
 }, {
   versionKey: false,
-  _id: false,
 });
 
 EventSchema.index({ country: 1 });

@@ -71,6 +71,9 @@ export class ReservationsRepository {
       limit,
       lean: true,
       sort,
+      select: {
+        _id: false
+      },
       customLabels: {
         docs: 'items',
         totalDocs: 'totalItems'

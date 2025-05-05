@@ -15,7 +15,6 @@ const ReservationSchema = new Schema<Reservation>({
   createdAt: { type: Date, default: Date.now },
 }, {
   versionKey: false,
-  _id: false,
 });
 
 ReservationSchema.index({ userId: 1 });
@@ -25,7 +24,7 @@ ReservationSchema.plugin(mongoosePaginate);
 
 export type ReservationPaginationModel = PaginateModel<Reservation>;
 export const Reservation = mongoose.model<Reservation, ReservationPaginationModel>(
-  "Reservation", 
+  "Reservation",
   ReservationSchema
-  
+
 );

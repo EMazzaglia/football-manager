@@ -35,7 +35,6 @@ export default function EventsList() {
 
             const response = await getEvents(queryParams);
 
-            // Update state with the response data
             if (refresh || page === 1) {
                 setEvents(response.items);
             } else {
@@ -81,7 +80,7 @@ export default function EventsList() {
 
     const handleEventPress = (eventId: string) => {
         router.push({
-            pathname: "/event/[id]",
+            pathname: "/events/[id]",
             params: { id: eventId }
         });
     };
