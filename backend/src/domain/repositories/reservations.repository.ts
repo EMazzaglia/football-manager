@@ -34,7 +34,7 @@ export class ReservationsRepository {
     );
 
     if (totalReservedSpots + reservationData.spots > 5) {
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         "User can't reserve more than 5 spots across all events"
       );
     }
@@ -48,7 +48,7 @@ export class ReservationsRepository {
     );
 
     if (spotsForThisEvent + reservationData.spots > 2) {
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         "User can't reserve more than 2 spots for the same event")
     }
 
@@ -56,8 +56,10 @@ export class ReservationsRepository {
     const reservation = new Reservation(reservationData);
     const savedReservation = await reservation.save();
     event.availableSeats -= reservationData.spots;
+    // I shouldn't be updating the event here, it should be done in the events repository
+    // exposing a method to update the event cause I am breaking the module boundaries 
     await event.save();
-    return savedReservation;
+    return savedReservation.toJSON();
   }
 
   async getUserReservationsWithPagination(

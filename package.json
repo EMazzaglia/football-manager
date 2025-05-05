@@ -9,6 +9,6 @@
     "scripts": {
       "start:backend": "cd backend && npm run docker:start",
       "stop:backend": "cd backend && npm run docker:down",
-      "start:mobile": "cd mobile && npm run web"
+      "start:mobile": "cd mobile && npm run start --tunnel"
     }
   }

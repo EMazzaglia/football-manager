@@ -25,7 +25,7 @@ export default function MyReservationsPage() {
     const [error, setError] = useState<string | null>(null);
 
     // Hardcoding userId for demonstration purposes
-    const userId = "user123";
+    const userId = "user1234";
 
     const fetchReservations = async (refresh = false) => {
         try {

@@ -2,8 +2,8 @@ import { Middleware, ExpressMiddlewareInterface } from "routing-controllers";
 import rateLimit from "express-rate-limit";
 import { Service } from "typedi";
 
-@Middleware({ type: "before" })
 @Service()
+@Middleware({ type: "before" })
 export class RateLimitMiddleware implements ExpressMiddlewareInterface {
     private limiter = rateLimit({
         windowMs: 15 * 60 * 1000,

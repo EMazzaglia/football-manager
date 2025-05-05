@@ -1,4 +1,4 @@
-# Football Reservation System
+# Football Reservation System (Backend)
 
 A node.js application for managing football match reservations built with Express, TypeScript, MongoDB, and containerized with Docker.
 
@@ -133,10 +133,27 @@ npm run test:unit
 npm run test:e2e
 ```
 
-## Improvements if I have time
+# Football Reservation System (Frontend)
+To run the application first follow the Backend section and have it running. 
+Then you can go to the root folder within a terminal and execute 
+
+```bash
+npm run start:mobile
+``` 
+
+## Demo
+- 5 minutes quick demo of the app's setup [here:](https://www.loom.com/share/668e43ba04ff4fee9976386902ac2945?sid=cc7be40c-2987-47cc-9caf-2dd339290e27)
+- Bugfix and end of demo here
+
+
+## Improvements
 1. Logger
 2. Authentication
 3. Transactions for reservations?
 4. Write more e2e and unit tests
 5. API DOCS probably swagger
 6. Caching. There are ton of events and a lot of users.
+7. Response type to avoid returninig _id object buffer.
+8. Test in the frontend for the components and some e2e with cypress
+9. The UX and layout of the app in general is terrible. 
+

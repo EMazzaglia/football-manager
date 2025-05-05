@@ -28,7 +28,7 @@ const TabsLayout = () => {
                 }}
             />
             <Tabs.Screen
-                name="reservations"
+                name="reservations/index"
                 options={{
                     title: "My Tickets",
                     tabBarIcon: ({ color, size }) => (

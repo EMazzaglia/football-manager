@@ -13,9 +13,10 @@ const ReservationSchema = new Schema<Reservation>({
   eventId: { type: String, required: true },
   spots: { type: Number, required: true, min: 1, max: 2 },
   createdAt: { type: Date, default: Date.now },
-}, {
-  versionKey: false,
-});
+},
+  {
+    versionKey: false,
+  });
 
 ReservationSchema.index({ userId: 1 });
 ReservationSchema.index({ eventId: 1 });
@@ -26,5 +27,4 @@ export type ReservationPaginationModel = PaginateModel<Reservation>;
 export const Reservation = mongoose.model<Reservation, ReservationPaginationModel>(
   "Reservation",
   ReservationSchema
-
 );

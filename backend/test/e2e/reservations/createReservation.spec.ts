@@ -169,7 +169,7 @@ describe("Reservation E2E Tests", () => {
                 .expect('Content-Type', /json/);
 
             // Assert
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(422);
             expect(res.body).toHaveProperty('message');
             expect(res.body.message).toContain(`User can't reserve more than 5 spots across all events`);
         }, 100000);
@@ -198,7 +198,7 @@ describe("Reservation E2E Tests", () => {
                 .expect('Content-Type', /json/);
 
             // Assert
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(422);
             expect(res.body).toHaveProperty('message');
             expect(res.body.message).toContain(`User can't reserve more than 2 spots for the same event`);
         });

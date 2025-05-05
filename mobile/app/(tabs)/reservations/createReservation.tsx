@@ -29,7 +29,7 @@ export default function ReservationPage() {
 
     // If i would have authentication and sign up I would offert to buy tickets but before going through sign up into login the new user and then coming back to this page.
     // since Im going without auth, harcoding a userId
-    const [userId, setUserId] = useState("user123");
+    const [userId, setUserId] = useState("user1234");
     const [spots, setSpots] = useState("1");
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
