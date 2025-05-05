@@ -13,7 +13,6 @@ import { useRouter } from "expo-router";
 import { getEvents } from "@/api/event.service";
 import { Event } from "@/types/events.interface";
 import { EventCard } from "@/components/EventCard";
-import { Ionicons } from "@expo/vector-icons";
 
 export default function Home() {
     const router = useRouter();
@@ -47,14 +46,6 @@ export default function Home() {
             <StatusBar barStyle="light-content" />
 
             <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.actionsContainer}>
-                    <Pressable onPress={() => router.push('/(tabs)/reservations')}
-                        style={styles.actionButton}
-                    >
-                        <Ionicons name="ticket" size={24} color="#fff" />
-                        <Text style={styles.actionText}>Purchase Ticket</Text>
-                    </Pressable>
-                </View>
                 <View style={styles.featuredSection}>
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>Featured Events</Text>

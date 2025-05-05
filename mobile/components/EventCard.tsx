@@ -1,5 +1,7 @@
 import { StyleSheet, Text, Pressable, View } from 'react-native';
 import { Event } from '@/types/events.interface';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 interface EventCardProps {
     event: Event;
@@ -7,6 +9,7 @@ interface EventCardProps {
 }
 
 export const EventCard = ({ event, onPress }: EventCardProps) => {
+    const router = useRouter();
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
@@ -14,6 +17,21 @@ export const EventCard = ({ event, onPress }: EventCardProps) => {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
+        });
+    };
+
+    const handleReservePress = (e: any) => {
+        e.stopPropagation();
+        router.push({
+            pathname: "/reservations",
+            params: {
+                eventId: event.eventId,
+                homeTeam: event.homeTeam,
+                awayTeam: event.awayTeam,
+                date: event.date,
+                price: event.price.toString(),
+                availableSeats: event.availableSeats.toString()
+            }
         });
     };
 
@@ -43,6 +61,16 @@ export const EventCard = ({ event, onPress }: EventCardProps) => {
                         <Text style={styles.seats}>{event.availableSeats} seats left</Text>
                     </View>
                 </View>
+
+                {event.availableSeats > 0 && (
+                    <Pressable
+                        style={styles.reserveButton}
+                        onPress={handleReservePress}
+                    >
+                        <Ionicons name="ticket-outline" size={16} color="#fff" />
+                        <Text style={styles.reserveText}>Book Tickets</Text>
+                    </Pressable>
+                )}
             </View>
         </Pressable>
     );
@@ -105,6 +133,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 12,
     },
     location: {
         color: '#ccc',
@@ -122,5 +151,21 @@ const styles = StyleSheet.create({
         color: '#ccc',
         fontSize: 12,
         marginTop: 2,
+    },
+    reserveButton: {
+        backgroundColor: '#0070f3',
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 4,
+    },
+    reserveText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 14,
+        marginLeft: 8,
     },
 });
